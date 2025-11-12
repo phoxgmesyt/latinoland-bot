@@ -23,6 +23,9 @@ START_TIME = datetime.now(timezone.utc)
 # Cargar variables de entorno
 load_dotenv()
 
+# Opcional: sincronizar comandos por GUILD_ID para pruebas (aparecen instantáneamente)
+GUILD_ID = os.getenv("GUILD_ID")
+
 # Crear bot con intents
 intents = discord.Intents.default()
 # No activar 'message_content' (privileged intent) porque este bot usa comandos slash.
@@ -154,9 +157,16 @@ async def on_ready():
     logger.info(f"Bot conectado como {bot.user}")
     logger.info("LATINOLAND ARK Bot listo")
     try:
-        synced = await bot.tree.sync()
-        print(f"📝 {len(synced)} comandos sincronizados con Discord")
-        logger.info(f"{len(synced)} comandos sincronizados con Discord")
+        if GUILD_ID:
+            # Sincroniza solo en el guild de pruebas (aparece instantáneo)
+            guild_obj = discord.Object(id=int(GUILD_ID))
+            synced = await bot.tree.sync(guild=guild_obj)
+            print(f"📝 {len(synced)} comandos sincronizados en guild {GUILD_ID}")
+            logger.info(f"{len(synced)} comandos sincronizados en guild {GUILD_ID}")
+        else:
+            synced = await bot.tree.sync()
+            print(f"📝 {len(synced)} comandos sincronizados con Discord (global)")
+            logger.info(f"{len(synced)} comandos sincronizados con Discord (global)")
     except Exception as e:
         print(f"❌ Error al sincronizar comandos: {e}")
         logger.exception(f"Error al sincronizar comandos: {e}")
@@ -367,7 +377,7 @@ async def ayuda_cmd(interaction: discord.Interaction):
 @bot.tree.command(name="status", description="Muestra el estado y uptime del bot")
 async def status_cmd(interaction: discord.Interaction):
     """Comando para mostrar uptime y estado del bot."""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     uptime = now - START_TIME
     hours, remainder = divmod(int(uptime.total_seconds()), 3600)
     minutes, seconds = divmod(remainder, 60)
