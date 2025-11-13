@@ -1,0 +1,370 @@
+{
+  "version": "1.1.0",
+  "lastUpdated": "2025-11-12T00:00:00Z",
+  "description": "LATINOLAND ARK Bot Data - Sincronizado automáticamente",
+  "shop_items": [
+    {
+      "id": "01",
+      "nombre": "Runestone",
+      "tipo": "item",
+      "descripcion": "Piedra runica",
+      "nivel": "-",
+      "precio": 200,
+      "comando": "/buy Runestone",
+      "cantidad": 1
+    },
+    {
+      "id": "02",
+      "nombre": "tools",
+      "tipo": "item",
+      "descripcion": "Pico y hacha metal",
+      "nivel": "-",
+      "precio": 500,
+      "comando": "/buy tools",
+      "cantidad": 1
+    },
+    {
+      "id": "03",
+      "nombre": "Aqualyrium",
+      "tipo": "item",
+      "descripcion": "Aqualyrium",
+      "nivel": "-",
+      "precio": 9999,
+      "comando": "/buy Aqualyrium",
+      "cantidad": 25
+    },
+    {
+      "id": "04",
+      "nombre": "Barnacle",
+      "tipo": "item",
+      "descripcion": "Barnacle",
+      "nivel": "-",
+      "precio": 9999,
+      "comando": "/buy Barnacle",
+      "cantidad": 50
+    },
+    {
+      "id": "05",
+      "nombre": "Wood",
+      "tipo": "item",
+      "descripcion": "Crystallized Wood",
+      "nivel": "-",
+      "precio": 9999,
+      "comando": "/buy Wood",
+      "cantidad": 50
+    },
+    {
+      "id": "06",
+      "nombre": "Fish",
+      "tipo": "item",
+      "descripcion": "Fish Scale",
+      "nivel": "-",
+      "precio": 9999,
+      "comando": "/buy Fish",
+      "cantidad": 50
+    },
+    {
+      "id": "07",
+      "nombre": "HardenedSteelIngot",
+      "tipo": "item",
+      "descripcion": "Hardened Steel Ingot",
+      "nivel": "-",
+      "precio": 9999,
+      "comando": "/buy HardenedSteelIngot",
+      "cantidad": 50
+    },
+    {
+      "id": "08",
+      "nombre": "Seaweed",
+      "tipo": "item",
+      "descripcion": "Seaweed",
+      "nivel": "-",
+      "precio": 5000,
+      "comando": "/buy Seaweed",
+      "cantidad": 50
+    },
+    {
+      "id": "09",
+      "nombre": "Manganese",
+      "tipo": "item",
+      "descripcion": "Manganese",
+      "nivel": "-",
+      "precio": 5000,
+      "comando": "/buy Manganese",
+      "cantidad": 50
+    }
+  ],
+  "sell_items": [
+    {
+      "id": "10",
+      "nombre": "rex",
+      "tipo": "item",
+      "descripcion": "Trofeo cabeza de rex",
+      "precio": 50,
+      "comando": "/sell rex"
+    },
+    {
+      "id": "12",
+      "nombre": "dragon",
+      "tipo": "item",
+      "descripcion": "Trofeo dragon en gamma",
+      "precio": 4000,
+      "comando": "/sell dragon"
+    },
+    {
+      "id": "15",
+      "nombre": "argy",
+      "tipo": "item",
+      "descripcion": "Argentavis Talon",
+      "precio": 50,
+      "comando": "/sell argy"
+    },
+    {
+      "id": "100",
+      "nombre": "arana",
+      "tipo": "item",
+      "descripcion": "Trofeo araña en gamma",
+      "precio": 3000,
+      "comando": "/sell arana"
+    },
+    {
+      "id": "101",
+      "nombre": "mono",
+      "tipo": "item",
+      "descripcion": "Trofeo mono en gamma",
+      "precio": 3000,
+      "comando": "/sell mono"
+    },
+    {
+      "id": "102",
+      "nombre": "allo",
+      "tipo": "item",
+      "descripcion": "Cerebro de Allosaurus",
+      "precio": 50,
+      "comando": "/sell allo"
+    },
+    {
+      "id": "103",
+      "nombre": "basil",
+      "tipo": "item",
+      "descripcion": "Grasa Basilosaurus",
+      "precio": 150,
+      "comando": "/sell basil"
+    },
+    {
+      "id": "104",
+      "nombre": "giga",
+      "tipo": "item",
+      "descripcion": "Corazon Giganotosaurus",
+      "precio": 300,
+      "comando": "/sell giga"
+    },
+    {
+      "id": "105",
+      "nombre": "megal",
+      "tipo": "item",
+      "descripcion": "Diente Megalodon",
+      "precio": 50,
+      "comando": "/sell megal"
+    }
+  ],
+  "dinos": [
+    {
+      "id": "50",
+      "nombre": "Carbonemys",
+      "tipo": "dino",
+      "descripcion": "(P/stats)",
+      "nivel": 1,
+      "precio": 1500,
+      "comando": "/buy bcarb"
+    },
+    {
+      "id": "51",
+      "nombre": "Daeodon",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 36000,
+      "comando": "/buy daeodon"
+    },
+    {
+      "id": "55",
+      "nombre": "Giganotosaurus",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 80000,
+      "comando": "/buy giga"
+    },
+    {
+      "id": "57",
+      "nombre": "Grifo",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 36000,
+      "comando": "/buy griffin"
+    },
+    {
+      "id": "60",
+      "nombre": "Mosasaurus",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 56000,
+      "comando": "/buy mosa"
+    },
+    {
+      "id": "63",
+      "nombre": "Rex",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 54000,
+      "comando": "/buy rex"
+    },
+    {
+      "id": "65",
+      "nombre": "Stegosaurus",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 38000,
+      "comando": "/buy stego"
+    },
+    {
+      "id": "67",
+      "nombre": "Therizinosaurus",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 42000,
+      "comando": "/buy theri"
+    },
+    {
+      "id": "79",
+      "nombre": "Basilisco",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 45000,
+      "comando": "/buy basilisk"
+    },
+    {
+      "id": "106",
+      "nombre": "Reaper",
+      "tipo": "dino",
+      "descripcion": "Crianza",
+      "nivel": 300,
+      "precio": 75000,
+      "comando": "/buy reaper"
+    }
+  ],
+  "dinos_abyssal": [
+    {
+      "id": "128",
+      "nombre": "Abyssal Ankylosaurus",
+      "tipo": "dino",
+      "descripcion": "Abyssal",
+      "nivel": 300,
+      "precio": 180000,
+      "comando": "/buy abyssal_ankylosaurus"
+    },
+    {
+      "id": "129",
+      "nombre": "Abyssal Moschops",
+      "tipo": "dino",
+      "descripcion": "Abyssal",
+      "nivel": 300,
+      "precio": 140000,
+      "comando": "/buy abyssal_moschops"
+    },
+    {
+      "id": "130",
+      "nombre": "Abyssal Procoptodon",
+      "tipo": "dino",
+      "descripcion": "Abyssal",
+      "nivel": 300,
+      "precio": 120000,
+      "comando": "/buy abyssal_procoptodon"
+    },
+    {
+      "id": "131",
+      "nombre": "Abyssal Stegosaurio",
+      "tipo": "dino",
+      "descripcion": "Abyssal",
+      "nivel": 300,
+      "precio": 160000,
+      "comando": "/buy abyssal_stegosaurio"
+    },
+    {
+      "id": "132",
+      "nombre": "Abyssal Therizinosaur",
+      "tipo": "dino",
+      "descripcion": "Abyssal",
+      "nivel": 300,
+      "precio": 200000,
+      "comando": "/buy abyssal_therizinosaur"
+    },
+    {
+      "id": "133",
+      "nombre": "Abyssal Thylacoleo",
+      "tipo": "dino",
+      "descripcion": "Abyssal",
+      "nivel": 300,
+      "precio": 190000,
+      "comando": "/buy abyssal_thylacoleo"
+    }
+  ],
+  "vips": [
+    {
+      "nombre": "VIP1",
+      "tipo": "vip",
+      "descripcion": "🔹250 puntos cada 10 minutos\n🔹Comandos-ark exclusivos\n🔹Rol exclusivo en Discord y Ark\n🔹Bonus extra x1 en sorteos",
+      "precio": "$10",
+      "duracion": "15 días"
+    },
+    {
+      "nombre": "VIP2",
+      "tipo": "vip",
+      "descripcion": "🔸350 puntos cada 10 minutos\n🔸Comandos-ark exclusivos\n🔸Rol exclusivo en Discord y Ark\n🔸Bonus extra x2 en sorteos",
+      "precio": "$20",
+      "duracion": "15 días"
+    },
+    {
+      "nombre": "VIP3",
+      "tipo": "vip",
+      "descripcion": "🔺450 puntos cada 10 minutos\n🔺Comandos-ark exclusivos\n🔺Rol exclusivo en Discord y Ark\n🔺Bonus extra x3 en sorteos",
+      "precio": "$30",
+      "duracion": "15 días"
+    }
+  ],
+  "packs": [
+    {
+      "nombre": "PACK1",
+      "tipo": "pack",
+      "descripcion": "🔹175.000 puntos + VIP1",
+      "precio": "$15"
+    },
+    {
+      "nombre": "PACK2",
+      "tipo": "pack",
+      "descripcion": "🔸300.000 puntos + VIP2",
+      "precio": "$25"
+    },
+    {
+      "nombre": "PACK3",
+      "tipo": "pack",
+      "descripcion": "🔺425.000 puntos + VIP3",
+      "precio": "$35"
+    }
+  ],
+  "servidor": {
+    "nombre": "LATINOLAND ARK",
+    "tipo": "PVE",
+    "descripcion": "Bienvenido al servidor LATINOLAND. Un lugar para forjar alianzas, conquistar territorios y vivir aventuras sin fin.",
+    "steam_connect": "steam://connect/216.245.177.39:27051",
+    "ip_epic": "216.245.177.39:27051",
+    "discord": "https://discord.gg/WAnqWz9RQ5"
+  }
+}

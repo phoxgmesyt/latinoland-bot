@@ -38,66 +38,111 @@ bot = commands.Bot(command_prefix="l!", intents=intents)
 EMBED_COLOR = discord.Color.from_rgb(0, 245, 255)  # Cyan (color del tema LATINOLAND)
 
 # =====================================================
-# DATOS DEL SERVIDOR ARK (desde google_sites_version.html)
+# CARGADOR DE DATOS DINÁMICOS (desde data.json)
 # =====================================================
 
-SHOP_ITEMS = [
-    {"id": "01", "nombre": "Runestone", "tipo": "item", "descripcion": "Piedra runica", "nivel": "-", "precio": 200, "comando": "/buy Runestone", "cantidad": 1},
-    {"id": "02", "nombre": "tools", "tipo": "item", "descripcion": "Pico y hacha metal", "nivel": "-", "precio": 500, "comando": "/buy tools", "cantidad": 1},
-    {"id": "03", "nombre": "Aqualyrium", "tipo": "item", "descripcion": "Aqualyrium", "nivel": "-", "precio": 9999, "comando": "/buy Aqualyrium", "cantidad": 25},
-    {"id": "04", "nombre": "Barnacle", "tipo": "item", "descripcion": "Barnacle", "nivel": "-", "precio": 9999, "comando": "/buy Barnacle", "cantidad": 50},
-    {"id": "05", "nombre": "Wood", "tipo": "item", "descripcion": "Crystallized Wood", "nivel": "-", "precio": 9999, "comando": "/buy Wood", "cantidad": 50},
-    {"id": "06", "nombre": "Fish", "tipo": "item", "descripcion": "Fish Scale", "nivel": "-", "precio": 9999, "comando": "/buy Fish", "cantidad": 50},
-    {"id": "07", "nombre": "HardenedSteelIngot", "tipo": "item", "descripcion": "Hardened Steel Ingot", "nivel": "-", "precio": 9999, "comando": "/buy HardenedSteelIngot", "cantidad": 50},
-    {"id": "08", "nombre": "Seaweed", "tipo": "item", "descripcion": "Seaweed", "nivel": "-", "precio": 5000, "comando": "/buy Seaweed", "cantidad": 50},
-    {"id": "09", "nombre": "Manganese", "tipo": "item", "descripcion": "Manganese", "nivel": "-", "precio": 5000, "comando": "/buy Manganese", "cantidad": 50}
-]
+def cargar_datos():
+    """Carga todos los datos desde data.json. Si falla, usa datos por defecto."""
+    data_path = os.path.join(os.path.dirname(__file__), 'data.json')
+    
+    # Datos por defecto (fallback si no existe data.json)
+    defaults = {
+        "SHOP_ITEMS": [
+            {"id": "01", "nombre": "Runestone", "tipo": "item", "descripcion": "Piedra runica", "nivel": "-", "precio": 200, "comando": "/buy Runestone", "cantidad": 1},
+            {"id": "02", "nombre": "tools", "tipo": "item", "descripcion": "Pico y hacha metal", "nivel": "-", "precio": 500, "comando": "/buy tools", "cantidad": 1},
+            {"id": "03", "nombre": "Aqualyrium", "tipo": "item", "descripcion": "Aqualyrium", "nivel": "-", "precio": 9999, "comando": "/buy Aqualyrium", "cantidad": 25},
+            {"id": "04", "nombre": "Barnacle", "tipo": "item", "descripcion": "Barnacle", "nivel": "-", "precio": 9999, "comando": "/buy Barnacle", "cantidad": 50},
+            {"id": "05", "nombre": "Wood", "tipo": "item", "descripcion": "Crystallized Wood", "nivel": "-", "precio": 9999, "comando": "/buy Wood", "cantidad": 50},
+            {"id": "06", "nombre": "Fish", "tipo": "item", "descripcion": "Fish Scale", "nivel": "-", "precio": 9999, "comando": "/buy Fish", "cantidad": 50},
+            {"id": "07", "nombre": "HardenedSteelIngot", "tipo": "item", "descripcion": "Hardened Steel Ingot", "nivel": "-", "precio": 9999, "comando": "/buy HardenedSteelIngot", "cantidad": 50},
+            {"id": "08", "nombre": "Seaweed", "tipo": "item", "descripcion": "Seaweed", "nivel": "-", "precio": 5000, "comando": "/buy Seaweed", "cantidad": 50},
+            {"id": "09", "nombre": "Manganese", "tipo": "item", "descripcion": "Manganese", "nivel": "-", "precio": 5000, "comando": "/buy Manganese", "cantidad": 50}
+        ],
+        "SELL_ITEMS": [
+            {"id": "10", "nombre": "rex", "tipo": "item", "descripcion": "Trofeo cabeza de rex", "precio": 50, "comando": "/sell rex"},
+            {"id": "12", "nombre": "dragon", "tipo": "item", "descripcion": "Trofeo dragon en gamma", "precio": 4000, "comando": "/sell dragon"},
+            {"id": "15", "nombre": "argy", "tipo": "item", "descripcion": "Argentavis Talon", "precio": 50, "comando": "/sell argy"},
+            {"id": "100", "nombre": "arana", "tipo": "item", "descripcion": "Trofeo araña en gamma", "precio": 3000, "comando": "/sell arana"},
+            {"id": "101", "nombre": "mono", "tipo": "item", "descripcion": "Trofeo mono en gamma", "precio": 3000, "comando": "/sell mono"},
+            {"id": "102", "nombre": "allo", "tipo": "item", "descripcion": "Cerebro de Allosaurus", "precio": 50, "comando": "/sell allo"},
+            {"id": "103", "nombre": "basil", "tipo": "item", "descripcion": "Grasa Basilosaurus", "precio": 150, "comando": "/sell basil"},
+            {"id": "104", "nombre": "giga", "tipo": "item", "descripcion": "Corazon Giganotosaurus", "precio": 300, "comando": "/sell giga"},
+            {"id": "105", "nombre": "megal", "tipo": "item", "descripcion": "Diente Megalodon", "precio": 50, "comando": "/sell megal"}
+        ],
+        "DINOS": [
+            {"id": "50", "nombre": "Carbonemys", "tipo": "dino", "descripcion": "(P/stats)", "nivel": 1, "precio": 1500, "comando": "/buy bcarb"},
+            {"id": "51", "nombre": "Daeodon", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 36000, "comando": "/buy daeodon"},
+            {"id": "55", "nombre": "Giganotosaurus", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 80000, "comando": "/buy giga"},
+            {"id": "57", "nombre": "Grifo", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 36000, "comando": "/buy griffin"},
+            {"id": "60", "nombre": "Mosasaurus", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 56000, "comando": "/buy mosa"},
+            {"id": "63", "nombre": "Rex", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 54000, "comando": "/buy rex"},
+            {"id": "65", "nombre": "Stegosaurus", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 38000, "comando": "/buy stego"},
+            {"id": "67", "nombre": "Therizinosaurus", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 42000, "comando": "/buy theri"},
+            {"id": "79", "nombre": "Basilisco", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 45000, "comando": "/buy basilisk"},
+            {"id": "106", "nombre": "Reaper", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 75000, "comando": "/buy reaper"},
+        ],
+        "DINOS_ABYSSAL": [
+            {"id": "128", "nombre": "Abyssal Ankylosaurus", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 180000, "comando": "/buy abyssal_ankylosaurus"},
+            {"id": "129", "nombre": "Abyssal Moschops", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 140000, "comando": "/buy abyssal_moschops"},
+            {"id": "130", "nombre": "Abyssal Procoptodon", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 120000, "comando": "/buy abyssal_procoptodon"},
+            {"id": "131", "nombre": "Abyssal Stegosaurio", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 160000, "comando": "/buy abyssal_stegosaurio"},
+            {"id": "132", "nombre": "Abyssal Therizinosaur", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 200000, "comando": "/buy abyssal_therizinosaur"},
+            {"id": "133", "nombre": "Abyssal Thylacoleo", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 190000, "comando": "/buy abyssal_thylacoleo"}
+        ],
+        "VIPS": [
+            {"nombre": "VIP1", "tipo": "vip", "descripcion": "🔹250 puntos cada 10 minutos\n🔹Comandos-ark exclusivos\n🔹Rol exclusivo en Discord y Ark\n🔹Bonus extra x1 en sorteos", "precio": "$10", "duracion": "15 días"},
+            {"nombre": "VIP2", "tipo": "vip", "descripcion": "🔸350 puntos cada 10 minutos\n🔸Comandos-ark exclusivos\n🔸Rol exclusivo en Discord y Ark\n🔸Bonus extra x2 en sorteos", "precio": "$20", "duracion": "15 días"},
+            {"nombre": "VIP3", "tipo": "vip", "descripcion": "🔺450 puntos cada 10 minutos\n🔺Comandos-ark exclusivos\n🔺Rol exclusivo en Discord y Ark\n🔺Bonus extra x3 en sorteos", "precio": "$30", "duracion": "15 días"}
+        ],
+        "PACKS": [
+            {"nombre": "PACK1", "tipo": "pack", "descripcion": "🔹175.000 puntos + VIP1", "precio": "$15"},
+            {"nombre": "PACK2", "tipo": "pack", "descripcion": "🔸300.000 puntos + VIP2", "precio": "$25"},
+            {"nombre": "PACK3", "tipo": "pack", "descripcion": "🔺425.000 puntos + VIP3", "precio": "$35"}
+        ]
+    }
+    
+    try:
+        if os.path.exists(data_path):
+            with open(data_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            logger.info(f"✅ Datos cargados desde {data_path}")
+            return {
+                "SHOP_ITEMS": data.get("shop_items", defaults["SHOP_ITEMS"]),
+                "SELL_ITEMS": data.get("sell_items", defaults["SELL_ITEMS"]),
+                "DINOS": data.get("dinos", defaults["DINOS"]),
+                "DINOS_ABYSSAL": data.get("dinos_abyssal", defaults["DINOS_ABYSSAL"]),
+                "VIPS": data.get("vips", defaults["VIPS"]),
+                "PACKS": data.get("packs", defaults["PACKS"])
+            }
+        else:
+            logger.warning(f"⚠️ data.json no encontrado en {data_path}. Usando datos por defecto.")
+            return {
+                "SHOP_ITEMS": defaults["SHOP_ITEMS"],
+                "SELL_ITEMS": defaults["SELL_ITEMS"],
+                "DINOS": defaults["DINOS"],
+                "DINOS_ABYSSAL": defaults["DINOS_ABYSSAL"],
+                "VIPS": defaults["VIPS"],
+                "PACKS": defaults["PACKS"]
+            }
+    except Exception as e:
+        logger.error(f"❌ Error al cargar data.json: {e}")
+        return {
+            "SHOP_ITEMS": defaults["SHOP_ITEMS"],
+            "SELL_ITEMS": defaults["SELL_ITEMS"],
+            "DINOS": defaults["DINOS"],
+            "DINOS_ABYSSAL": defaults["DINOS_ABYSSAL"],
+            "VIPS": defaults["VIPS"],
+            "PACKS": defaults["PACKS"]
+        }
 
-SELL_ITEMS = [
-    {"id": "10", "nombre": "rex", "tipo": "item", "descripcion": "Trofeo cabeza de rex", "precio": 50, "comando": "/sell rex"},
-    {"id": "12", "nombre": "dragon", "tipo": "item", "descripcion": "Trofeo dragon en gamma", "precio": 4000, "comando": "/sell dragon"},
-    {"id": "15", "nombre": "argy", "tipo": "item", "descripcion": "Argentavis Talon", "precio": 50, "comando": "/sell argy"},
-    {"id": "100", "nombre": "arana", "tipo": "item", "descripcion": "Trofeo araña en gamma", "precio": 3000, "comando": "/sell arana"},
-    {"id": "101", "nombre": "mono", "tipo": "item", "descripcion": "Trofeo mono en gamma", "precio": 3000, "comando": "/sell mono"},
-    {"id": "102", "nombre": "allo", "tipo": "item", "descripcion": "Cerebro de Allosaurus", "precio": 50, "comando": "/sell allo"},
-    {"id": "103", "nombre": "basil", "tipo": "item", "descripcion": "Grasa Basilosaurus", "precio": 150, "comando": "/sell basil"},
-    {"id": "104", "nombre": "giga", "tipo": "item", "descripcion": "Corazon Giganotosaurus", "precio": 300, "comando": "/sell giga"},
-    {"id": "105", "nombre": "megal", "tipo": "item", "descripcion": "Diente Megalodon", "precio": 50, "comando": "/sell megal"}
-]
-
-DINOS = [
-    {"id": "50", "nombre": "Carbonemys", "tipo": "dino", "descripcion": "(P/stats)", "nivel": 1, "precio": 1500, "comando": "/buy bcarb"},
-    {"id": "51", "nombre": "Daeodon", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 36000, "comando": "/buy daeodon"},
-    {"id": "55", "nombre": "Giganotosaurus", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 80000, "comando": "/buy giga"},
-    {"id": "57", "nombre": "Grifo", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 36000, "comando": "/buy griffin"},
-    {"id": "60", "nombre": "Mosasaurus", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 56000, "comando": "/buy mosa"},
-    {"id": "63", "nombre": "Rex", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 54000, "comando": "/buy rex"},
-    {"id": "65", "nombre": "Stegosaurus", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 38000, "comando": "/buy stego"},
-    {"id": "67", "nombre": "Therizinosaurus", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 42000, "comando": "/buy theri"},
-    {"id": "79", "nombre": "Basilisco", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 45000, "comando": "/buy basilisk"},
-    {"id": "106", "nombre": "Reaper", "tipo": "dino", "descripcion": "Crianza", "nivel": 300, "precio": 75000, "comando": "/buy reaper"},
-]
-
-DINOS_ABYSSAL = [
-    {"id": "128", "nombre": "Abyssal Ankylosaurus", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 180000, "comando": "/buy abyssal_ankylosaurus"},
-    {"id": "129", "nombre": "Abyssal Moschops", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 140000, "comando": "/buy abyssal_moschops"},
-    {"id": "130", "nombre": "Abyssal Procoptodon", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 120000, "comando": "/buy abyssal_procoptodon"},
-    {"id": "131", "nombre": "Abyssal Stegosaurio", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 160000, "comando": "/buy abyssal_stegosaurio"},
-    {"id": "132", "nombre": "Abyssal Therizinosaur", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 200000, "comando": "/buy abyssal_therizinosaur"},
-    {"id": "133", "nombre": "Abyssal Thylacoleo", "tipo": "dino", "descripcion": "Abyssal", "nivel": 300, "precio": 190000, "comando": "/buy abyssal_thylacoleo"}
-]
-
-VIPS = [
-    {"nombre": "VIP1", "tipo": "vip", "descripcion": "🔹250 puntos cada 10 minutos\n🔹Comandos-ark exclusivos\n🔹Rol exclusivo en Discord y Ark\n🔹Bonus extra x1 en sorteos", "precio": "$10", "duracion": "15 días"},
-    {"nombre": "VIP2", "tipo": "vip", "descripcion": "🔸350 puntos cada 10 minutos\n🔸Comandos-ark exclusivos\n🔸Rol exclusivo en Discord y Ark\n🔸Bonus extra x2 en sorteos", "precio": "$20", "duracion": "15 días"},
-    {"nombre": "VIP3", "tipo": "vip", "descripcion": "🔺450 puntos cada 10 minutos\n🔺Comandos-ark exclusivos\n🔺Rol exclusivo en Discord y Ark\n🔺Bonus extra x3 en sorteos", "precio": "$30", "duracion": "15 días"}
-]
-
-PACKS = [
-    {"nombre": "PACK1", "tipo": "pack", "descripcion": "🔹175.000 puntos + VIP1", "precio": "$15"},
-    {"nombre": "PACK2", "tipo": "pack", "descripcion": "🔸300.000 puntos + VIP2", "precio": "$25"},
-    {"nombre": "PACK3", "tipo": "pack", "descripcion": "🔺425.000 puntos + VIP3", "precio": "$35"}
-]
+# Cargar datos al iniciar
+_datos = cargar_datos()
+SHOP_ITEMS = _datos["SHOP_ITEMS"]
+SELL_ITEMS = _datos["SELL_ITEMS"]
+DINOS = _datos["DINOS"]
+DINOS_ABYSSAL = _datos["DINOS_ABYSSAL"]
+VIPS = _datos["VIPS"]
+PACKS = _datos["PACKS"]
 
 # =====================================================
 # FUNCIONES AUXILIARES
@@ -422,7 +467,7 @@ async def ayuda_cmd(interaction: discord.Interaction):
     )
     embed.add_field(
         name="/dinos",
-        value="Muestra todos los dinosaurios disponibles",
+        value="Muestra todos los dinosaurios disponibles con filtros",
         inline=False
     )
     embed.add_field(
@@ -450,6 +495,16 @@ async def ayuda_cmd(interaction: discord.Interaction):
         value="Muestra información de conexión del servidor",
         inline=False
     )
+    embed.add_field(
+        name="/status",
+        value="Muestra el estado y uptime del bot",
+        inline=False
+    )
+    embed.add_field(
+        name="/reload",
+        value="[ADMIN] Recarga los datos desde `data.json`",
+        inline=False
+    )
     
     embed.set_footer(text="Usa / para ver todos los comandos disponibles")
     await interaction.response.send_message(embed=embed)
@@ -468,6 +523,59 @@ async def status_cmd(interaction: discord.Interaction):
     embed.set_footer(text="LATINOLAND ARK Bot")
     await interaction.response.send_message(embed=embed)
     logger.info(f"/status invoked by {interaction.user} (guild={getattr(interaction.guild, 'name', None)}) - uptime {hours}:{minutes}:{seconds}")
+
+@bot.tree.command(name="reload", description="[ADMIN] Recarga los datos desde data.json")
+async def reload_cmd(interaction: discord.Interaction):
+    """Comando para recargar los datos desde data.json. Solo para administradores."""
+    # Verificar si el usuario es administrador
+    if not interaction.user.guild_permissions.administrator:
+        embed = discord.Embed(
+            title="❌ Permiso Denegado",
+            description="Solo los administradores pueden usar este comando.",
+            color=discord.Color.red()
+        )
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+        logger.warning(f"/reload invoked by non-admin {interaction.user} - access denied")
+        return
+    
+    try:
+        await interaction.response.defer()
+        
+        # Recargar datos
+        global SHOP_ITEMS, SELL_ITEMS, DINOS, DINOS_ABYSSAL, VIPS, PACKS
+        _datos = cargar_datos()
+        SHOP_ITEMS = _datos["SHOP_ITEMS"]
+        SELL_ITEMS = _datos["SELL_ITEMS"]
+        DINOS = _datos["DINOS"]
+        DINOS_ABYSSAL = _datos["DINOS_ABYSSAL"]
+        VIPS = _datos["VIPS"]
+        PACKS = _datos["PACKS"]
+        
+        embed = discord.Embed(
+            title="✅ Datos Recargados",
+            description=f"Se han recargado correctamente los datos desde `data.json`\n\n"
+                        f"📋 Items para comprar: {len(SHOP_ITEMS)}\n"
+                        f"💰 Items para vender: {len(SELL_ITEMS)}\n"
+                        f"🦕 Dinos normales: {len(DINOS)}\n"
+                        f"⚫ Dinos Abyssal: {len(DINOS_ABYSSAL)}\n"
+                        f"👑 Paquetes VIP: {len(VIPS)}\n"
+                        f"📦 Ofertas especiales: {len(PACKS)}",
+            color=discord.Color.green()
+        )
+        embed.set_footer(text="Los cambios están disponibles inmediatamente")
+        
+        await interaction.followup.send(embed=embed)
+        logger.info(f"/reload executed by {interaction.user} - data reloaded successfully")
+        
+    except Exception as e:
+        logger.error(f"Error en /reload: {e}")
+        embed = discord.Embed(
+            title="❌ Error al Recargar",
+            description=f"Ocurrió un error al recargar los datos:\n```{str(e)}```",
+            color=discord.Color.red()
+        )
+        await interaction.followup.send(embed=embed)
+
 
 # =====================================================
 # INICIAR BOT
