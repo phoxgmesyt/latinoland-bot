@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LATINOLAND ARK - Admin Editor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: rgba(0, 245, 255, 0.1);
+            border: 2px solid #00f5ff;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+        }
+
+        header h1 {
+            color: #00f5ff;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+
+        header p {
+            color: #b0b0b0;
+            font-size: 1em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #00f5ff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #00d9ff;
+            box-shadow: 0 0 25px rgba(0, 245, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #4ade80;
+            color: #000;
+        }
+
+        .btn-success:hover {
+            background: #22c55e;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+            transform: translateY(-2px);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 245, 255, 0.2);
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: rgba(0, 245, 255, 0.1);
+            border: 2px solid #00f5ff;
+            border-radius: 6px;
+            color: #00f5ff;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: #00f5ff;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.5);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .table-wrapper {
+            background: rgba(30, 30, 50, 0.8);
+            border: 2px solid rgba(0, 245, 255, 0.2);
+            border-radius: 8px;
+            overflow-x: auto;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(0, 245, 255, 0.15);
+            color: #00f5ff;
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid rgba(0, 245, 255, 0.3);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(0, 245, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(0, 245, 255, 0.05);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 4px;
+            color: #e0e0e0;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #00f5ff;
+            box-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
+            background: rgba(0, 245, 255, 0.05);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .btn-edit {
+            background: #3b82f6;
+            color: #fff;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit:hover {
+            background: #2563eb;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: #fff;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background: rgba(74, 222, 128, 0.2);
+            border: 2px solid #4ade80;
+            color: #86efac;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #fca5a5;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(0, 245, 255, 0.1);
+            border: 2px solid rgba(0, 245, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #00f5ff;
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #b0b0b0;
+            font-size: 0.95em;
+        }
+
+        .add-row-form {
+            background: rgba(0, 245, 255, 0.05);
+            border: 2px dashed rgba(0, 245, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .add-row-form h3 {
+            color: #00f5ff;
+            margin-bottom: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #b0b0b0;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 50px;
+            border-top: 1px solid rgba(0, 245, 255, 0.1);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #00f5ff;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 245, 255, 0.1);
+            border-top: 3px solid #00f5ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .table-wrapper {
+                padding: 10px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 8px 5px;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            textarea {
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔧 LATINOLAND ARK - Admin Editor</h1>
+            <p>Edita precios y datos sin código • Cambios en tiempo real</p>
+        </header>
+
+        <div id="message" class="message"></div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="loadDataFromFile()">
+                📂 Cargar data.json
+            </button>
+            <button class="btn btn-success" onclick="saveToLocalStorage()">
+                💾 Guardar Localmente
+            </button>
+            <button class="btn btn-warning" onclick="exportData()">
+                📥 Descargar JSON
+            </button>
+            <button class="btn btn-danger" onclick="resetData()">
+                🔄 Limpiar Todo
+            </button>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <h3 id="shop-count">0</h3>
+                <p>Items Comprar</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="sell-count">0</h3>
+                <p>Items Vender</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="dino-count">0</h3>
+                <p>Dinos Normales</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="abyssal-count">0</h3>
+                <p>Dinos Abyssal</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="vip-count">0</h3>
+                <p>Paquetes VIP</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="pack-count">0</h3>
+                <p>Ofertas</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'shop')">🛒 Comprar</button>
+            <button class="tab-btn" onclick="switchTab(event, 'sell')">💰 Vender</button>
+            <button class="tab-btn" onclick="switchTab(event, 'dinos')">🦕 Dinos</button>
+            <button class="tab-btn" onclick="switchTab(event, 'abyssal')">⚫ Abyssal</button>
+            <button class="tab-btn" onclick="switchTab(event, 'vips')">👑 VIPs</button>
+            <button class="tab-btn" onclick="switchTab(event, 'packs')">📦 Packs</button>
+        </div>
+
+        <!-- SHOP ITEMS TAB -->
+        <div id="shop" class="tab-content active">
+            <div class="add-row-form">
+                <h3>➕ Agregar Nuevo Item para Comprar</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ID</label>
+                        <input type="text" id="shop-id" placeholder="ej: 10">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="shop-name" placeholder="ej: Runestone">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input type="text" id="shop-desc" placeholder="ej: Piedra runica">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="number" id="shop-price" placeholder="200" min="0">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addShopItem()">Agregar Item</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="shop-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SELL ITEMS TAB -->
+        <div id="sell" class="tab-content">
+            <div class="add-row-form">
+                <h3>➕ Agregar Nuevo Item para Vender</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ID</label>
+                        <input type="text" id="sell-id" placeholder="ej: 110">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="sell-name" placeholder="ej: Trofeo">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input type="text" id="sell-desc" placeholder="ej: Trofeo especial">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="number" id="sell-price" placeholder="50" min="0">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addSellItem()">Agregar Item</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="sell-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DINOS TAB -->
+        <div id="dinos" class="tab-content">
+            <div class="add-row-form">
+                <h3>➕ Agregar Nuevo Dino</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ID</label>
+                        <input type="text" id="dino-id" placeholder="ej: 107">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="dino-name" placeholder="ej: Phoenix">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input type="text" id="dino-desc" placeholder="ej: Crianza o (P/stats)">
+                    </div>
+                    <div class="form-group">
+                        <label>Nivel</label>
+                        <input type="number" id="dino-level" placeholder="300" min="0" max="500">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="number" id="dino-price" placeholder="100000" min="0">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addDino()">Agregar Dino</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="dino-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Nivel</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ABYSSAL DINOS TAB -->
+        <div id="abyssal" class="tab-content">
+            <div class="add-row-form">
+                <h3>➕ Agregar Nuevo Dino Abyssal</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>ID</label>
+                        <input type="text" id="abyssal-id" placeholder="ej: 134">
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="abyssal-name" placeholder="ej: Abyssal Phoenix">
+                    </div>
+                    <div class="form-group">
+                        <label>Nivel</label>
+                        <input type="number" id="abyssal-level" placeholder="300" min="0" max="500">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="number" id="abyssal-price" placeholder="250000" min="0">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addAbyssalDino()">Agregar Dino Abyssal</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="abyssal-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Nivel</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VIPS TAB -->
+        <div id="vips" class="tab-content">
+            <div class="add-row-form">
+                <h3>➕ Agregar Nuevo Paquete VIP</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="vip-name" placeholder="ej: VIP4">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="text" id="vip-price" placeholder="ej: $40">
+                    </div>
+                    <div class="form-group">
+                        <label>Duración</label>
+                        <input type="text" id="vip-duration" placeholder="ej: 30 días">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="vip-desc" placeholder="Describe los beneficios..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addVIP()">Agregar VIP</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="vip-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Duración</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PACKS TAB -->
+        <div id="packs" class="tab-content">
+            <div class="add-row-form">
+                <h3>➕ Agregar Nueva Oferta</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" id="pack-name" placeholder="ej: PACK4">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <input type="text" id="pack-price" placeholder="ej: $45">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="pack-desc" placeholder="Describe la oferta..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="addPack()">Agregar Oferta</button>
+            </div>
+            <div class="table-wrapper">
+                <table id="pack-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>LATINOLAND ARK Admin Panel v1.0 • © 2025</p>
+        <p>Guarda los cambios y descarga el JSON para actualizar tu data.json</p>
+    </footer>
+
+    <script>
+        // Data store
+        let appData = {
+            shop_items: [],
+            sell_items: [],
+            dinos: [],
+            dinos_abyssal: [],
+            vips: [],
+            packs: []
+        };
+
+        // Load data from localStorage on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('latinoland_data');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                    renderAllTables();
+                    showMessage('Datos cargados desde almacenamiento local', 'success');
+                } catch (e) {
+                    showMessage('Error al cargar datos guardados', 'error');
+                }
+            }
+            updateStats();
+        });
+
+        function showMessage(text, type = 'success') {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = `message ${type} show`;
+            setTimeout(() => {
+                msg.classList.remove('show');
+            }, 5000);
+        }
+
+        function updateStats() {
+            document.getElementById('shop-count').textContent = appData.shop_items.length;
+            document.getElementById('sell-count').textContent = appData.sell_items.length;
+            document.getElementById('dino-count').textContent = appData.dinos.length;
+            document.getElementById('abyssal-count').textContent = appData.dinos_abyssal.length;
+            document.getElementById('vip-count').textContent = appData.vips.length;
+            document.getElementById('pack-count').textContent = appData.packs.length;
+        }
+
+        function switchTab(e, tabName) {
+            // Remove active from all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Add active to selected
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+        }
+
+        function renderAllTables() {
+            renderShopTable();
+            renderSellTable();
+            renderDinoTable();
+            renderAbyssalTable();
+            renderVIPTable();
+            renderPackTable();
+            updateStats();
+        }
+
+        function renderShopTable() {
+            const tbody = document.querySelector('#shop-table tbody');
+            tbody.innerHTML = appData.shop_items.map((item, idx) => `
+                <tr>
+                    <td><input type="text" value="${item.id}" onchange="appData.shop_items[${idx}].id = this.value; updateStats();"></td>
+                    <td><input type="text" value="${item.nombre}" onchange="appData.shop_items[${idx}].nombre = this.value; updateStats();"></td>
+                    <td><input type="text" value="${item.descripcion}" onchange="appData.shop_items[${idx}].descripcion = this.value;"></td>
+                    <td><input type="number" value="${item.precio}" onchange="appData.shop_items[${idx}].precio = parseInt(this.value);"></td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="btn-delete" onclick="appData.shop_items.splice(${idx}, 1); renderShopTable();">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderSellTable() {
+            const tbody = document.querySelector('#sell-table tbody');
+            tbody.innerHTML = appData.sell_items.map((item, idx) => `
+                <tr>
+                    <td><input type="text" value="${item.id}" onchange="appData.sell_items[${idx}].id = this.value;"></td>
+                    <td><input type="text" value="${item.nombre}" onchange="appData.sell_items[${idx}].nombre = this.value;"></td>
+                    <td><input type="text" value="${item.descripcion}" onchange="appData.sell_items[${idx}].descripcion = this.value;"></td>
+                    <td><input type="number" value="${item.precio}" onchange="appData.sell_items[${idx}].precio = parseInt(this.value);"></td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="btn-delete" onclick="appData.sell_items.splice(${idx}, 1); renderSellTable();">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderDinoTable() {
+            const tbody = document.querySelector('#dino-table tbody');
+            tbody.innerHTML = appData.dinos.map((item, idx) => `
+                <tr>
+                    <td><input type="text" value="${item.id}" onchange="appData.dinos[${idx}].id = this.value;"></td>
+                    <td><input type="text" value="${item.nombre}" onchange="appData.dinos[${idx}].nombre = this.value;"></td>
+                    <td><input type="text" value="${item.descripcion}" onchange="appData.dinos[${idx}].descripcion = this.value;"></td>
+                    <td><input type="number" value="${item.nivel}" onchange="appData.dinos[${idx}].nivel = parseInt(this.value);"></td>
+                    <td><input type="number" value="${item.precio}" onchange="appData.dinos[${idx}].precio = parseInt(this.value);"></td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="btn-delete" onclick="appData.dinos.splice(${idx}, 1); renderDinoTable();">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAbyssalTable() {
+            const tbody = document.querySelector('#abyssal-table tbody');
+            tbody.innerHTML = appData.dinos_abyssal.map((item, idx) => `
+                <tr>
+                    <td><input type="text" value="${item.id}" onchange="appData.dinos_abyssal[${idx}].id = this.value;"></td>
+                    <td><input type="text" value="${item.nombre}" onchange="appData.dinos_abyssal[${idx}].nombre = this.value;"></td>
+                    <td><input type="number" value="${item.nivel}" onchange="appData.dinos_abyssal[${idx}].nivel = parseInt(this.value);"></td>
+                    <td><input type="number" value="${item.precio}" onchange="appData.dinos_abyssal[${idx}].precio = parseInt(this.value);"></td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="btn-delete" onclick="appData.dinos_abyssal.splice(${idx}, 1); renderAbyssalTable();">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderVIPTable() {
+            const tbody = document.querySelector('#vip-table tbody');
+            tbody.innerHTML = appData.vips.map((item, idx) => `
+                <tr>
+                    <td><input type="text" value="${item.nombre}" onchange="appData.vips[${idx}].nombre = this.value;"></td>
+                    <td><input type="text" value="${item.precio}" onchange="appData.vips[${idx}].precio = this.value;"></td>
+                    <td><input type="text" value="${item.duracion}" onchange="appData.vips[${idx}].duracion = this.value;"></td>
+                    <td><textarea onchange="appData.vips[${idx}].descripcion = this.value;">${item.descripcion}</textarea></td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="btn-delete" onclick="appData.vips.splice(${idx}, 1); renderVIPTable();">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderPackTable() {
+            const tbody = document.querySelector('#pack-table tbody');
+            tbody.innerHTML = appData.packs.map((item, idx) => `
+                <tr>
+                    <td><input type="text" value="${item.nombre}" onchange="appData.packs[${idx}].nombre = this.value;"></td>
+                    <td><input type="text" value="${item.precio}" onchange="appData.packs[${idx}].precio = this.value;"></td>
+                    <td><textarea onchange="appData.packs[${idx}].descripcion = this.value;">${item.descripcion}</textarea></td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="btn-delete" onclick="appData.packs.splice(${idx}, 1); renderPackTable();">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Add functions
+        function addShopItem() {
+            const id = document.getElementById('shop-id').value.trim();
+            const nombre = document.getElementById('shop-name').value.trim();
+            const descripcion = document.getElementById('shop-desc').value.trim();
+            const precio = parseInt(document.getElementById('shop-price').value) || 0;
+
+            if (!id || !nombre || !precio) {
+                showMessage('Completa todos los campos requeridos', 'error');
+                return;
+            }
+
+            appData.shop_items.push({ id, nombre, tipo: 'item', descripcion, nivel: '-', precio, comando: `/buy ${nombre}`, cantidad: 1 });
+            renderShopTable();
+            document.getElementById('shop-id').value = '';
+            document.getElementById('shop-name').value = '';
+            document.getElementById('shop-desc').value = '';
+            document.getElementById('shop-price').value = '';
+            showMessage('Item agregado ✓', 'success');
+        }
+
+        function addSellItem() {
+            const id = document.getElementById('sell-id').value.trim();
+            const nombre = document.getElementById('sell-name').value.trim();
+            const descripcion = document.getElementById('sell-desc').value.trim();
+            const precio = parseInt(document.getElementById('sell-price').value) || 0;
+
+            if (!id || !nombre || !precio) {
+                showMessage('Completa todos los campos requeridos', 'error');
+                return;
+            }
+
+            appData.sell_items.push({ id, nombre, tipo: 'item', descripcion, precio, comando: `/sell ${nombre}` });
+            renderSellTable();
+            document.getElementById('sell-id').value = '';
+            document.getElementById('sell-name').value = '';
+            document.getElementById('sell-desc').value = '';
+            document.getElementById('sell-price').value = '';
+            showMessage('Item agregado ✓', 'success');
+        }
+
+        function addDino() {
+            const id = document.getElementById('dino-id').value.trim();
+            const nombre = document.getElementById('dino-name').value.trim();
+            const descripcion = document.getElementById('dino-desc').value.trim();
+            const nivel = parseInt(document.getElementById('dino-level').value) || 1;
+            const precio = parseInt(document.getElementById('dino-price').value) || 0;
+
+            if (!id || !nombre || !precio) {
+                showMessage('Completa todos los campos requeridos', 'error');
+                return;
+            }
+
+            appData.dinos.push({ id, nombre, tipo: 'dino', descripcion, nivel, precio, comando: `/buy ${nombre.toLowerCase()}` });
+            renderDinoTable();
+            document.getElementById('dino-id').value = '';
+            document.getElementById('dino-name').value = '';
+            document.getElementById('dino-desc').value = '';
+            document.getElementById('dino-level').value = '';
+            document.getElementById('dino-price').value = '';
+            showMessage('Dino agregado ✓', 'success');
+        }
+
+        function addAbyssalDino() {
+            const id = document.getElementById('abyssal-id').value.trim();
+            const nombre = document.getElementById('abyssal-name').value.trim();
+            const nivel = parseInt(document.getElementById('abyssal-level').value) || 300;
+            const precio = parseInt(document.getElementById('abyssal-price').value) || 0;
+
+            if (!id || !nombre || !precio) {
+                showMessage('Completa todos los campos requeridos', 'error');
+                return;
+            }
+
+            appData.dinos_abyssal.push({ id, nombre, tipo: 'dino', descripcion: 'Abyssal', nivel, precio, comando: `/buy ${nombre.toLowerCase().replace(' ', '_')}` });
+            renderAbyssalTable();
+            document.getElementById('abyssal-id').value = '';
+            document.getElementById('abyssal-name').value = '';
+            document.getElementById('abyssal-level').value = '';
+            document.getElementById('abyssal-price').value = '';
+            showMessage('Dino Abyssal agregado ✓', 'success');
+        }
+
+        function addVIP() {
+            const nombre = document.getElementById('vip-name').value.trim();
+            const precio = document.getElementById('vip-price').value.trim();
+            const duracion = document.getElementById('vip-duration').value.trim();
+            const descripcion = document.getElementById('vip-desc').value.trim();
+
+            if (!nombre || !precio || !duracion) {
+                showMessage('Completa todos los campos requeridos', 'error');
+                return;
+            }
+
+            appData.vips.push({ nombre, tipo: 'vip', descripcion, precio, duracion });
+            renderVIPTable();
+            document.getElementById('vip-name').value = '';
+            document.getElementById('vip-price').value = '';
+            document.getElementById('vip-duration').value = '';
+            document.getElementById('vip-desc').value = '';
+            showMessage('VIP agregado ✓', 'success');
+        }
+
+        function addPack() {
+            const nombre = document.getElementById('pack-name').value.trim();
+            const precio = document.getElementById('pack-price').value.trim();
+            const descripcion = document.getElementById('pack-desc').value.trim();
+
+            if (!nombre || !precio) {
+                showMessage('Completa todos los campos requeridos', 'error');
+                return;
+            }
+
+            appData.packs.push({ nombre, tipo: 'pack', descripcion, precio });
+            renderPackTable();
+            document.getElementById('pack-name').value = '';
+            document.getElementById('pack-price').value = '';
+            document.getElementById('pack-desc').value = '';
+            showMessage('Oferta agregada ✓', 'success');
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('latinoland_data', JSON.stringify(appData));
+            showMessage('Datos guardados en navegador ✓', 'success');
+        }
+
+        function exportData() {
+            const exportData = {
+                version: '1.2.0',
+                lastUpdated: new Date().toISOString(),
+                description: 'LATINOLAND ARK Bot Data - Editado desde Admin Panel',
+                ...appData
+            };
+
+            const json = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showMessage('JSON descargado ✓', 'success');
+        }
+
+        function loadDataFromFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        appData = {
+                            shop_items: data.shop_items || [],
+                            sell_items: data.sell_items || [],
+                            dinos: data.dinos || [],
+                            dinos_abyssal: data.dinos_abyssal || [],
+                            vips: data.vips || [],
+                            packs: data.packs || []
+                        };
+                        renderAllTables();
+                        showMessage('Datos cargados exitosamente ✓', 'success');
+                    } catch (err) {
+                        showMessage('Error al cargar JSON: ' + err.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function resetData() {
+            if (confirm('¿Estás seguro? Esto borrará todos los cambios locales (pero no los guardados en el servidor)')) {
+                appData = {
+                    shop_items: [],
+                    sell_items: [],
+                    dinos: [],
+                    dinos_abyssal: [],
+                    vips: [],
+                    packs: []
+                };
+                localStorage.removeItem('latinoland_data');
+                renderAllTables();
+                showMessage('Datos limpiados ✓', 'success');
+            }
+        }
+    </script>
+</body>
+</html>
