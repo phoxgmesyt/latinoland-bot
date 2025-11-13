@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from discord import app_commands
+from discord import app_commands, ui
 import json
 from typing import Optional
 import os
@@ -126,9 +126,11 @@ def crear_embed_items(items: list, titulo: str, usar_paginas: bool = False) -> l
         for i in range(0, len(items), 10):
             pagina = items[i:i+10]
             page_num = (i // 10) + 1
+            total_pages = (len(items) + 9) // 10
             embed = discord.Embed(
-                title=f"{titulo} (Página {page_num})",
-                color=EMBED_COLOR
+                title=f"{titulo}",
+                color=EMBED_COLOR,
+                description=f"**Página {page_num} de {total_pages}**"
             )
             
             for item in pagina:
@@ -146,8 +148,86 @@ def crear_embed_items(items: list, titulo: str, usar_paginas: bool = False) -> l
     return embeds
 
 # =====================================================
-# EVENTOS DEL BOT
+# VISTAS INTERACTIVAS (Buttons, Select Menus)
 # =====================================================
+
+class PaginationView(ui.View):
+    """Vista con botones para navegar entre páginas."""
+    def __init__(self, embeds: list, timeout=300):
+        super().__init__(timeout=timeout)
+        self.embeds = embeds
+        self.current_page = 0
+        self.update_buttons()
+    
+    def update_buttons(self):
+        """Actualiza el estado de los botones según la página actual."""
+        self.previous_button.disabled = (self.current_page == 0)
+        self.next_button.disabled = (self.current_page == len(self.embeds) - 1)
+        
+        if len(self.embeds) <= 1:
+            self.previous_button.disabled = True
+            self.next_button.disabled = True
+    
+    @ui.button(label="⬅️ Anterior", style=discord.ButtonStyle.blurple)
+    async def previous_button(self, interaction: discord.Interaction, button: ui.Button):
+        if self.current_page > 0:
+            self.current_page -= 1
+            self.update_buttons()
+            await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
+        else:
+            await interaction.response.defer()
+    
+    @ui.button(label="Siguiente ➡️", style=discord.ButtonStyle.blurple)
+    async def next_button(self, interaction: discord.Interaction, button: ui.Button):
+        if self.current_page < len(self.embeds) - 1:
+            self.current_page += 1
+            self.update_buttons()
+            await interaction.response.edit_message(embed=self.embeds[self.current_page], view=self)
+        else:
+            await interaction.response.defer()
+
+
+class DinoFilterSelect(ui.Select):
+    """Select menu para filtrar dinos por tipo."""
+    def __init__(self):
+        options = [
+            discord.SelectOption(label="Todos los Dinos", value="todos", emoji="🦕"),
+            discord.SelectOption(label="Normales (Crianza)", value="normal", emoji="🥚"),
+            discord.SelectOption(label="Abyssal", value="abyssal", emoji="⚫"),
+        ]
+        super().__init__(
+            placeholder="Selecciona el tipo de dino...",
+            min_values=1,
+            max_values=1,
+            options=options
+        )
+    
+    async def callback(self, interaction: discord.Interaction):
+        """Manejador del select."""
+        filter_type = self.values[0]
+        
+        if filter_type == "todos":
+            items = DINOS + DINOS_ABYSSAL
+            titulo = "🦕 DINOS - Todos Disponibles"
+        elif filter_type == "normal":
+            items = [d for d in DINOS if d.get("descripcion") != "Abyssal"]
+            titulo = "🥚 DINOS - Normales (Crianza)"
+        elif filter_type == "abyssal":
+            items = DINOS_ABYSSAL
+            titulo = "⚫ DINOS ABYSSAL"
+        
+        embeds = crear_embed_items(items, titulo, usar_paginas=True)
+        view = PaginationView(embeds)
+        
+        await interaction.response.edit_message(embeds=[embeds[0]], view=view)
+
+
+class DinoFilterView(ui.View):
+    """Vista que contiene el select para filtrar dinos."""
+    def __init__(self):
+        super().__init__(timeout=300)
+        self.add_item(DinoFilterSelect())
+
 
 @bot.event
 async def on_ready():
@@ -182,9 +262,8 @@ async def comprar(interaction: discord.Interaction):
     embeds = crear_embed_items(SHOP_ITEMS, "🛒 SHOP - Comprar Items", usar_paginas=True)
     
     if embeds:
-        await interaction.response.send_message(embeds=embeds[:1])
-        for embed in embeds[1:]:
-            await interaction.followup.send(embed=embed)
+        view = PaginationView(embeds)
+        await interaction.response.send_message(embed=embeds[0], view=view)
     else:
         await interaction.response.send_message("❌ No hay items disponibles", ephemeral=True)
         logger.info("/comprar returned no items")
@@ -196,24 +275,28 @@ async def vender(interaction: discord.Interaction):
     embeds = crear_embed_items(SELL_ITEMS, "💰 VENDER - Items", usar_paginas=True)
     
     if embeds:
-        await interaction.response.send_message(embeds=embeds[:1])
-        for embed in embeds[1:]:
-            await interaction.followup.send(embed=embed)
+        view = PaginationView(embeds)
+        await interaction.response.send_message(embed=embeds[0], view=view)
     else:
         await interaction.response.send_message("❌ No hay items para vender", ephemeral=True)
         logger.info("/vender returned no items")
 
-@bot.tree.command(name="dinos", description="Muestra los dinosaurios disponibles para comprar")
+@bot.tree.command(name="dinos", description="Muestra los dinosaurios disponibles para comprar (con filtros)")
 async def dinos_cmd(interaction: discord.Interaction):
-    """Comando para mostrar dinos normales."""
+    """Comando para mostrar dinos con filtro."""
     logger.info(f"/dinos invoked by {interaction.user} (guild={getattr(interaction.guild, 'name', None)})")
     todos_dinos = DINOS + DINOS_ABYSSAL
-    embeds = crear_embed_items(todos_dinos, "🦕 DINOS - Dinosaurios Disponibles", usar_paginas=True)
+    embeds = crear_embed_items(todos_dinos, "🦕 DINOS - Todos Disponibles", usar_paginas=True)
     
     if embeds:
-        await interaction.response.send_message(embeds=embeds[:1])
-        for embed in embeds[1:]:
-            await interaction.followup.send(embed=embed)
+        view = DinoFilterView()
+        pagination = PaginationView(embeds)
+        
+        # Combinar ambas vistas
+        for item in pagination.children:
+            view.add_item(item)
+        
+        await interaction.response.send_message(embed=embeds[0], view=view)
     else:
         await interaction.response.send_message("❌ No hay dinos disponibles", ephemeral=True)
         logger.info("/dinos returned no dinos")
@@ -238,9 +321,8 @@ async def abyssal_cmd(interaction: discord.Interaction):
     embeds = crear_embed_items(DINOS_ABYSSAL, "⚫ DINOS ABYSSAL", usar_paginas=True)
     
     if embeds:
-        await interaction.response.send_message(embeds=embeds[:1])
-        for embed in embeds[1:]:
-            await interaction.followup.send(embed=embed)
+        view = PaginationView(embeds)
+        await interaction.response.send_message(embed=embeds[0], view=view)
     else:
         await interaction.response.send_message("❌ No hay dinos abyssal", ephemeral=True)
         logger.info("/abyssal returned no dinos")
@@ -393,10 +475,27 @@ async def status_cmd(interaction: discord.Interaction):
 
 if __name__ == "__main__":
     TOKEN = os.getenv("DISCORD_TOKEN")
-    
+
+    # Sanitize token (remove accidental surrounding quotes, whitespace or "Bot " prefix)
+    if TOKEN:
+        TOKEN = TOKEN.strip()
+        if TOKEN.startswith('"') and TOKEN.endswith('"'):
+            TOKEN = TOKEN[1:-1]
+        if TOKEN.startswith("Bot "):
+            # Some users paste the header-style token 'Bot <token>' by mistake
+            TOKEN = TOKEN.split(" ", 1)[1]
+
     if not TOKEN:
-        print("❌ ERROR: No se encontró DISCORD_TOKEN en el archivo .env")
-        print("Por favor, crea un archivo .env con tu token de bot")
+        print("❌ ERROR: No se encontró DISCORD_TOKEN en las variables de entorno")
+        print("Por favor, añade tu token en .env local o en las Secrets/Environment del hosting (DISCORD_TOKEN)")
+        exit(1)
+
+    # Basic validation to give a clearer error message before discord.py raises
+    if len(TOKEN) < 40:
+        masked = TOKEN[:6] + "..." + TOKEN[-6:] if len(TOKEN) > 12 else TOKEN
+        print(f"❌ ERROR: El token parece inválido o está incompleto: {masked}")
+        print("-> Asegúrate de pegar el Bot Token (no el Client Secret), y sin comillas ni prefijo 'Bot '")
+        print("-> Si no funciona, genera uno nuevo en Discord Developer Portal -> Bot -> Reset Token")
         exit(1)
     
     try:
